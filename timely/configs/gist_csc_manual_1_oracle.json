@@ -1,0 +1,6 @@
+{
+  "detectors": ["gist","csc_default"],
+  "policy_mode": ["oracle"],
+  "weights_mode": ["manual_1"],
+  "label": "Oracle"
+}

@@ -1,0 +1,6 @@
+{
+  "detectors": ["gist","csc_default"],
+  "policy_mode": ["fastinf"],
+  "weights_mode": ["rl_half"],	
+  "rewards_mode": ["auc_ap"]
+}

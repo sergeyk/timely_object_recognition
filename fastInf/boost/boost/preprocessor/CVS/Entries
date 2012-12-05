@@ -1,0 +1,19 @@
+D/tuple////
+D/seq////
+D/repetition////
+D/punctuation////
+D/logical////
+D/list////
+D/facilities////
+D/detail////
+D/debug////
+D/control////
+D/config////
+D/arithmetic////
+/stringize.hpp/1.1/Sun Feb 14 09:06:26 2010//
+/repeat.hpp/1.1/Sun Feb 14 09:06:25 2010//
+/inc.hpp/1.1/Sun Feb 14 09:06:25 2010//
+/identity.hpp/1.1/Sun Feb 14 09:06:25 2010//
+/empty.hpp/1.1/Sun Feb 14 09:06:25 2010//
+/comma_if.hpp/1.1/Sun Feb 14 09:06:25 2010//
+/cat.hpp/1.1/Sun Feb 14 09:06:25 2010//

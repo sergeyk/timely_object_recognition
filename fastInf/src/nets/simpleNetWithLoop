@@ -1,0 +1,50 @@
+# This is an output file for the lb library , 
+# for testing the loopy belief
+# Author : Ariel Jaimovich.
+
+
+# variables list
+# varName  \t  var number of assignments
+
+@Variables
+var0	2
+var1	2
+var2	2
+var3	2
+var4	2
+var5	2
+@End
+
+# measures list
+# measureName \t  number of vars in measure \t the vars card \t  table of potentials
+# the table is ordered when the assign advances like a number i.e : 000 001 010 011 100 ...
+
+@Measures
+meas0	2	2 2	0.2 0.8 0.65 0.35
+meas1	2	2 2	0.5 0.5 0.9 0.1
+meas2	2	2 2	0.3 0.7 0.6 0.4
+@End
+
+# Cliques List
+# clique name \t  number of vars in clique \t the list of vars in clique 
+# \t  number of neighbourss \t list of neighbouring cliques 
+
+@Cliques
+cl0	2	0 1	3	1 2 3	
+cl1	2	1 2	3	0 2 3
+cl2	2	1 3	4	0 1 3 4
+cl3	2	1 4	4	0 1 2 5
+cl4	2	3 5	2	2 5
+cl5	2	4 5	2	3 4	
+@End
+
+
+#num of clique \t num of measure
+@CliqueToMeasure
+0	0
+1	1
+2	2
+3	1
+4	2
+5	1
+@End

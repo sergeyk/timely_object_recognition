@@ -1,0 +1,6 @@
+{
+  "detectors": ["csc_default"],
+  "policy_mode": ["fixed_order"],
+  "weights_mode": ["rl_half"],	
+  "rewards_mode": ["auc_ap"]
+}

@@ -1,0 +1,12 @@
+# this will look better if viewed as -*- makefile -*-
+
+# $(ROOTDIR) variable is defined in the main Makefile (default as ../)
+
+# The boost library is distributed along with fastInf, and placed under the root dir
+BOOSTDIR = $(ROOTDIR)/boost
+
+# This library is the one under which you installed the glpk (i.e., the dir you used when configuring glpk)
+GLPKDIR = $(ROOTDIR)/glpk/build
+
+# The main gsl library under which the .libs and cblas/.libs  directories reside
+GSLDIR = $(ROOTDIR)/gsl

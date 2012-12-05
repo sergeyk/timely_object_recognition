@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Evaluation Dashboard</title>
+
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="../../evaluation_support/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="../../evaluation_support/blueprint/print.css" type="text/css" media="print">
+    <!--[if lt IE 8]><link rel="stylesheet" href="../evaluation_support/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+  </head>
+  
+  <body>
+    <div class="container">
+      <h1>Evaluation Dashboard</h1>
+      <table>
+        ${makerow(names)}
+        ${makerow(aps)}
+      </table>
+
+      <hr />
+      <h3>Grid of P-R Curves</h3>
+      TODO
+    </div>
+  </body>
+</html>
+
+<%def name="makerow(row)">
+    <tr>
+    % for val in row:
+        <td>${val}</td>\
+    % endfor
+    </tr>
+</%def>

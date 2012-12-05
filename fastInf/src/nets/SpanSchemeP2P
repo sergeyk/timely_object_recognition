@@ -1,0 +1,45 @@
+( add
+   (Protein
+    (id p1)
+    (id p2) 
+   )
+)
+
+( list name
+  (Protein
+   (id p1)
+   (id p2) 
+   )
+)
+  
+( span
+   ((Table Interaction) 
+    (Rule (p1_id LESS p2_id))
+   )
+   ((Table IntAssay) 
+    (Rule (p1_id LESS p2_id))
+ ) 
+)
+
+( assignEvidenceAuto
+   (Table IntAssay1)
+   (Rule (p1_id EQ p1))
+   (Val 0)
+)
+
+( assignEvidenceAuto
+   (Table IntAssay1)
+   (Rule (p1_id FROM list1))
+   (Val 0)
+)
+
+
+
+( assignEvidence
+   (Table IntAssay1)
+   ((p1_id p1) (p2_id p2) 0)
+   ((p1_id p2) (p2_id p3) 0)
+   ((p1_id p3) (p2_id p4) 0)
+)
+
+   

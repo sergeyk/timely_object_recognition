@@ -1,0 +1,101 @@
+Installing FastInf
+=======================
+
+1) Go to fastInf/src and type: 
+   > make externalLibs 
+   This command will download the GSL and GLPK libraries from their corresponding ftp sites
+   and install them on your computer. If you want to download the libraries yourself or already 
+   have them on your computer, follow the instructions in the bottom of this page.
+   * Note: the compilation of GSL and GLPK can take some time.
+ 
+2) Go to the fastInf/src and type:
+   > make  
+
+3) After compilation you will find all the executables under the fastInf/build directory.
+   To make sure the compilation succeeded, you can run fastInf/build/bin/infer 
+   with no parameters (it will result in the usage message). 
+   In case of linkage problems with GSL see comment below.    
+
+
+Possible problems with linkage to GSL
+===================================
+
+If the library compiles properly, but during runtime a linkage error 
+occurs, there might be linking problems to the GSL library.
+To solve standard library linking problems (.so flies) you need to update your LD_LIBRARY_PATH; For example: 
+> setenv LD_LIBRARY_PATH [ROOT GSL DIR/.libs]:[ROOT GSL DIR/cblas/.libs]:[ROOT GLPK DIR/build/lib]
+
+If there dynamic linking problems (.dylib files) you should update your 
+DYLD_LIBRARY_PATH; For example:
+> setenv DYLD_LIBRARY_PATH [ROOT GSL DIR/.libs]:[ROOT GSL DIR/cblas/.libs]:[ROOT GLPK DIR/build/lib]
+
+
+
+Running Examples
+================
+You can run these commands from the fastInf root directory:
+
+Run simple lbp and print final beliefs (on cliques):
+build/bin/infer -i src/nets/simpleNetWithLoop -b 0
+
+Run lbp with weighted queue scheduling and print final beliefs:
+build/bin/infer -i src/nets/simpleNetWithLoop -q 1 -b 0
+
+Run lbp, compute also exact beliefs using clique tree and compare the beliefs:
+build/bin/infer -i src/nets/simpleNetWithLoop -exact + -b 0
+
+Run lbp, assign the evidence in the grid3x3.assign file and compute log likelihood of each assignment:
+build/bin/infer -i src/nets/grid3x3.net -e src/nets/grid3x3.assign -m 0
+
+Run generalized lbp, and compute marginals (for each variable):
+build/bin/infer -i src/nets/grid3x3.net -c src/nets/grid3x3.clusters -b 0
+
+Run Mean Field infernce and print beliefs:
+build/bin/mfinfer -i src/nets/simpleloop.net -b 0
+
+Run standard Gibbs Sampling to sample 500 samples from grid9x9:
+build/bin/gibbsSample src/nets/grid9x9.net 10000 1000 500 gibbsData_9x9grid.assign
+
+Run Gibbs Sampling with burning time decided by convergence test (but no larger than 10000) to sample 500 samples from grid3x3:
+build/bin/gibbsSample src/nets/grid3x3.net converge:10000 1000 500 gibbsData_3x3grid.assign
+
+Run Gibbs Sampling on 6 chains with varying temperatures (with annealing) to sample 500 samples from grid9x9:
+build/bin/gibbsSample src/nets/grid9x9.net 10000 1000 500 gibbsData_9x9grid.assign -anneal=6
+
+Learn the parameters of the alarm network from the 100 data samples in alarm.100.fastInf.data:
+build/bin/learning -i src/nets/alarm/alarm.fastInf.net -e src/nets/alarm/alarm.100.fastInf.data -o alarmResultNet.net
+
+Learn the parameters of the alarm network as above with L1 regulariation (param 0.5):
+build/bin/learning -i src/nets/alarm/alarm.fastInf.net -e src/nets/alarm/alarm.100.fastInf.data -r1 0.5 -o alarmResultNet.net
+
+Learn the parameters of the alarm network as above with L2 regulariation (param 0.7):
+build/bin/learning -i src/nets/alarm/alarm.fastInf.net -e src/nets/alarm/alarm.100.fastInf.data -r2 0.7 -o alarmResultNet.net
+
+
+
+
+Installing GSL and GLPK
+====================================
+
+* In case you already have downloaded and installed GSL and GLPK go directly to section (3).
+
+1) Download the GSL library from its website (you can use version 1.11 from here:
+   http://ftp.cc.uoc.gr/mirrors/gnu/gsl/gsl-1.11.tar.gz). After unzipping it, 
+   you need to compile it by going to its root directory, and use ./configure followed by
+   make (see GSL README for specific instructions)
+
+2) Download the GLPK library from its website (you can use version 4.41 from here:
+   http://ftp.gnu.org/gnu/glpk/glpk-4.41.tar.gz). After unzipping it, 
+   you need to compile it from its root directory. To simplify the installations process, 
+   we recommend to create a build directory inside the glpk home dir, and then use 
+   ./configure --prefix=[full target directory], followed by make and make install. (see 
+   glpk README and INSTALL documentation files, or type ./configure --help).
+   For example, if your glpk-home-dir is /Users/username/glpk use:
+   > cd /Users/username/glpk
+   > mkdir build
+   > ./configure --prefix=/Users/username/glpk/build
+   > make 
+   > make install   
+
+3) In fastInf/src open the file Makefile.libraries, and update the location of the libraries you 
+   compiled in sections 1-2

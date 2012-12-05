@@ -1,0 +1,6 @@
+{
+  "detectors": ["gist","csc_default"],
+  "policy_mode": ["fixed_order"],
+  "weights_mode": ["manual_1"],
+  "label": "Fixed Order"
+}

@@ -1,0 +1,218 @@
+# Important:
+# 1) Script should be invoked from within the 'tests' directory
+# 2) Make sure path of executables points to the correct place
+# 3) Input files should be in the Inputs directory in order to work
+#
+# Test: fastInf
+# Feature and Weighted measures
+
+
+#Basic measure test
+<test>
+execute = true
+name = Basic-Measure-Test
+command = ../../../build/tests/measureTest
+params = measuresForTest.tab
+<end test>
+
+#Basic Graph Test
+<test>
+execute = true
+name = Basic-Graph-Test
+command = ../../../build/tests/graphTest
+params = 
+<end test>
+
+#Basic Model Test
+<test>
+execute = true
+name = Basic-Model-Test
+command = ../../../build/tests/modelTest
+params = simpleNetWithLoop.net
+<end test>
+
+# Messages
+<test>
+execute = true
+name = Messages
+command = ../../../build/bin/infer
+params = -i grid5x5.net -v 2 -Ius 1 -t - -Imm 100 -Ims 10000000 -Iqt 0 -Is 0 -It 1e-5 -Ict 1
+<end test>
+
+# Messages (Partially Asynchronous)
+<test>
+execute = true
+name = Messages-Partially-Asynchronous
+command = ../../../build/bin/infer
+params = -i grid5x5.net -Imm 100 -v 2 -Ius 5 -t - -Iqt 0  -Is 0 -It 1e-5 -Ict 1
+<end test>
+
+# Fully Asynchronous Sum-product
+<test>
+execute = true
+name = Asynchronous-Sum-Product
+command = ../../../build/bin/infer
+params = -i grid5x5.net -Igm 100 -Imm 500 -v 1 -b 0 -Ius 1 -t - -Iqt 0 -Is 0 -It 1e-5 -Ict 1
+<end test>
+
+# Fully synchronous Sum-product
+<test>
+execute = true
+name = Synchronous-Sum-Product
+command = ../../../build/bin/infer
+params = -i grid5x5.net -Igm 100 -Imm 3000 -v 1 -b 0 -Ius 0 -t - -Iqt 0  -Is 0 -It 1e-10 -Ict 1
+<end test>
+
+# Max-product
+# Ignore the bad KL's (it's comparing to sum-product)
+<test>
+execute = true
+name = Max-Product
+command = ../../../build/bin/infer
+params = -i grid5x5.net -Igm 100 -Imm 3000 -v 1 -x + -b 0 -Ius 1 -t - -Iqt 0 -Is 0 -It 1e-5 -Ict 1
+<end test>
+
+# BIN
+<test>
+execute = true
+name = BIN-Sum-Product
+command = ../../../build/bin/infer
+params = -i grid9x9.net -v 1 -Igm 1000 -Imm 100000 -b 0 -Ius 1 -q 1 -t - -Is 0 -It 1e-10 -Ict 1
+<end test>
+
+# Evidence
+<test>
+execute = true
+name = Evidence
+command = ../../../build/bin/infer
+params = -i grid3x3.net -e grid3x3.missing.assign -v 1 -Igm 100 -Imm 999 -b 0 -t - -Is 0 -It 1e-10 -Ict 1
+<end test>
+
+# GBP on 3x3 grid
+<test>
+execute = true
+name = GBP.grid3x3
+command = ../../../build/bin/infer
+params = -i grid3x3.net -c grid3x3.clusters -v 1 -Igm 100 -Imm 999 -b 0 -t - -Is 0 -It 1e-10 -Ict 1
+<end test>
+
+# GBP on 5x5 grid
+<test>
+execute = false
+name = GBP.grid5x5
+command = ../../../build/bin/infer
+params = -i grid5x5.net -c grid5x5.clusters -v 1 -Igm 100 -Imm 99999 -b 0 -t - -Is 0 -It 1e-10 -Ict 1
+<end test>
+
+# Exact inference
+<test>
+execute = true
+name = Exact
+command = ../../../build/bin/infer
+params = -i grid5x5.net -exact + -b 0
+<end test>
+
+# Exact inference on a tree
+<test>
+execute = true
+name = ExactInfOnTree
+command = ../../../build/bin/infer
+params = -i alarm.tree.fastInf.net -exact + -b 0
+<end test>
+
+# Counting numbers (variable-valid)
+<test>
+execute = true
+name = CountingNumbers
+command = ../../../build/bin/infer
+params = -i grid5x5.net -k grid5x5.cns.valid -b 0
+<end test>
+
+# TRW-opt
+<test>
+execute = true
+name = TRW-opt
+command = ../../../build/bin/infer
+params = -i grid5x5.net -trwopt grid5x5.cns.trwOpt -b 0
+<end test>
+
+# Convexified-Bethe (upper bound)
+<test>
+execute = true
+name = ConvexBetheU
+command = ../../../build/bin/infer
+params = -i grid5x5.net -valopt grid5x5.cns.valOpt -b 0
+<end test>
+
+# Testing learning on a grid with L1 regularization
+<test>
+execute = true
+name = GridLearningL1
+command = ../../../build/bin/learning
+params = -i grid3x3.net -e grid3x3.assign -v 6 -b -r1 5 -m 5
+<end test>
+
+# Testing learning on a grid with L2 regularization
+<test>
+execute = true
+name = GridLearningL2
+command = ../../../build/bin/learning
+params = -i grid3x3.net -e grid3x3.assign -v 6 -b -r2 3 -m 5
+<end test>
+
+# Deriv test (likelihood)
+<test>
+execute = true
+name = derivTestLikelihood
+command = ../../../build/bin/learning
+params = -i grid3x3.net -e grid3x3.assign -b -t -m 5
+<end test>
+
+# Testing learning on a grid
+<test>
+execute = true
+name = GridLearning
+command = ../../../build/bin/learning
+params = -i grid3x3.net -e grid3x3.assign -v 6 -b -m 5
+<end test>
+
+# Testing learning on a tree
+<test>
+execute = true
+name = TreeLearning
+command = ../../../build/bin/learning
+params = -i alarm.tree.fastInf.net -e alarm.100.fastInf.data -v 6 -b -m 5
+<end test>
+
+#Basic suffStat+learning test #1
+<test>
+execute = true
+name = SuffStat-Learning-Test-1
+command = ../../../build/tests/suffStatTest
+params = alarm.tree.fastInf.net alarm.10.fastInf.data
+<end test>
+
+#Basic suffStat+learning test #2
+<test>
+execute = true
+name = SuffStat-Learning-Test-2
+command = ../../../build/tests/suffStatTest
+params = alarm.fastInf.net alarm.10.fastInf.data
+<end test>
+
+#Basic suffStat+learning test #3
+<test>
+execute = true
+name = SuffStat-Learning-Test-3
+command = ../../../build/tests/suffStatTest
+params = grid3x3.net grid3x3.assign
+<end test>
+
+#Basic suffStat+learning test #4
+<test>
+execute = true
+name = SuffStat-Learning-Test-4
+command = ../../../build/tests/suffStatTest
+params = grid3x3.net grid3x3.missing.assign
+<end test>
+

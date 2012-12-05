@@ -1,0 +1,58 @@
+# This is an intput file for the lb library , 
+# for testing the loopy belief
+# Author : Ariel Jaimovich.
+
+
+
+# variables list
+# varName  \t  var number of assignments
+
+@Variables
+var0	2
+var1	2
+var2	2
+@End
+
+#The option to add idle or shared params 
+#is designed for use in parameter estimation cases
+#where you wish to fix some entries in a table during learning
+#or tie some entries in the table to the same parameter
+#to see example for usage see simpleNet.shared.net in this directory. 
+
+@IdleParams
+ip1	1	idle param for trial
+ip2	1	idle param for trial 2
+@End
+
+@SharedParams
+sp1	100	shared param for trial
+sp2	150	shared param for trial 2
+@End
+
+
+# measures list
+# measureName \t  number of vars in measure \t the vars card \t  table of potentials
+# the table is ordered when the assign advances like a number i.e : 000 001 010 011 100 ...
+@Measures
+mes0	1	2	0.4 0.6
+mes1	2	2 2	0.5 0.5 0.9 0.1
+mes2	2	2 2	0.3 0.7 0.6 0.4
+@End
+
+# Cliques List
+# clique name \t  number of vars in clique \t the list of vars in clique 
+# \t  number of neighbourss \t list of neighbouring cliques 
+
+@Cliques
+cl0	1	0	2	1 2
+cl1	2	0 1	1	0
+cl2	2	0 2	1	0
+@End
+
+
+#num of clique \t num of measure
+@CliqueToMeasure
+0	0
+1	1
+2	2
+@End

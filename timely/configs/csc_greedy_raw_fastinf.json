@@ -1,0 +1,9 @@
+{
+  "detectors": ["csc_default"],
+  "policy_mode": ["fastinf"],
+  "weights_mode": ["greedy"],	
+  "rewards_mode": ["auc_ap_raw"],
+  "label": "Fastinf greedy auc_ap_raw",
+  "color": "orange",
+  "line": "-"
+}

@@ -1,0 +1,6 @@
+{
+  "detectors": ["csc_default"],
+  "policy_mode": ["fastinf"],
+  "weights_mode": ["rl_regression"],	
+  "rewards_mode": ["auc_ap_raw"]
+}

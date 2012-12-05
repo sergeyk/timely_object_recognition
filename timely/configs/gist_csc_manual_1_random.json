@@ -1,0 +1,7 @@
+{
+  "detectors": ["gist","csc_default"],
+  "policy_mode": ["random"],
+  "weights_mode": ["manual_1"],
+  "label": "Random",
+  "line": "--"
+}

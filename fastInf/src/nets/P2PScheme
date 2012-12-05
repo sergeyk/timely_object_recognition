@@ -1,0 +1,176 @@
+(table Protein id)
+(table Interaction id)
+
+(meta Compartment (nucleus cytoplasm mitochondria))
+(meta IntAssay (Y2H_ito Y2H_uetz PullDown_gavin PullDown_ho))
+(meta locAssay (Huh Kumar YPD))
+
+(table Localization (Compartment) id)
+(table InteractionAssay (IntAssay)  id)
+(table LocalizationAssay (LocAssay Compartment) id)
+
+(link (Interaction p1_id) (Protein id))
+(link (Interaction p2_id) (Protein id))
+(link (Localization p_id) (Protein id))
+(link (InteractionAssay p1_id) (Protein id))
+(link (InteractionAssay p2_id) (Protein id))
+(link (LocalizationAssay p_id) (Protein id))
+
+(attribute Interaction exists (no yes))
+(attribute Localization exists (no yes))
+(attribute InteractionAssay found (no yes))
+(attribute LocalizationAssay found (no yes))
+
+(feature UnivariateInteraction
+   (Quantifiers
+       (Protein p1)
+       (Protein p2)
+   )
+   (Condition
+       ((Interaction p1 p2) exist yes)
+   )
+   (Constraint Less
+	(p1 id)
+	(p2 id)
+   )
+   (Parameter (1.0))
+)
+
+(feature UnivariateLocalization
+   (Quantifiers
+       (Protein p1)
+   )
+   (MetaQuantifiers 
+       (Compartment c)
+   )
+   (Condition
+       ((Localization p1) exist yes)
+   )
+   (Parameter        
+       ((nucleus) (1.1))
+       ((cytoplasm) (2.2))
+       ((mitochondria) (3.3)) 
+   )
+)
+
+(feature ClosedTriplet
+   (Quantifiers
+      (Protein p1)
+      (Protein p2)
+      (Protein p3)
+   )
+   (Condition
+      ((Interaction p1 p2) exist yes)
+      ((Interaction p2 p3) exist yes)
+      ((Interaction p1 p3) exist yes)
+   )
+   (Constraint Less
+	(p1 id)
+	(p2 id)
+   )
+   (Constraint Less
+	(p2 id)
+	(p3 id)
+   )
+
+   (Parameter (2.0))
+)
+
+(feature ChainTriplet
+   (Quantifiers
+       (Protein p1)
+       (Protein p2)
+       (Protein p3)
+   )
+   (Condition
+     ((Interaction p1 p2) exist  yes)
+     ((Interaction p2 p3) exist  yes)
+     ((Interaction p1 p3) exist  no)
+   )
+   (Constraint Neq
+	(p1 id)
+	(p2 id)
+   )
+   (Constraint Neq
+	(p1 id)
+	(p3 id)
+   )
+   (Constraint Neq
+	(p2 id)
+	(p3 id)
+   )
+   (Parameter (2.0))
+)
+
+(feature CoLocalized
+    (Quantifiers
+       (Protein p1)
+       (Protein p2)
+    )
+    (MetaQuantifiers 
+       (Compartment c)
+    )
+    (Condition
+     ((Interaction p1 p2) exist yes)
+     ((Localization p1) exist yes)
+     ((Localization p2) exist yes)
+    )
+   (Constraint Neq
+	(p1 id)
+	(p2 id)
+   )
+   (Parameter
+       ((nucleus) (1.1))
+       ((cytoplasm) (2.2))
+       ((mitochondria) (3.3) )
+    )
+)
+
+(cpd LoclizationAssayProb
+    (Quantifiers
+       (Protein p)
+    )
+    (MetaQuantifiers 
+       (Compartment c)
+       (LocAssay LA)
+    )
+    (Parents
+       (Localization p)
+    )
+    (Child LocalizationAssay LA)
+    
+    (Parameter
+       	((Huh nucleus) (0.9 0.1 0.3 0.7))
+       	((Huh cytoplasm) (0.8 0.2 0.3 0.7))
+       	((Huh mitochondria) (0.8 0.2 0.3 0.7))
+	((Kumar nucleus) (0.9 0.1 0.3 0.7))
+       	((Kumar cytoplasm) (0.8 0.2 0.3 0.7))
+       	((Kumar mitochondria) (0.9 0.1 0.3 0.7))
+	((YPD nucleus) (0.8 0.2 0.3 0.7))
+       	((YPD cytoplasm) (0.9 0.1 0.3 0.7))
+       	((YPD mitochondria) (0.8 0.2 0.3 0.7))
+    )
+)
+
+   
+(cpd InteractionAssayProb
+    (Quantifiers
+       (Protein p1)
+       (Protein p2)
+    )
+    (MetaQuantifiers 
+       (IntAssay IA)
+    )
+    (Parents
+       (Interaction p1 p2)
+    )
+    (Child InteractionAssay p1 p2)
+    
+    (Parameter
+       	((Y2h_Uetz) (0.9 0.1 0.3 0.7))
+       	((Y2H_Ito) (0.9 0.1 0.3 0.7))
+  	((PullDown_ho) (0.9 0.1 0.3 0.7))
+  	((PullDown_gavin) (0.9 0.1 0.3 0.7))
+     
+    )
+)

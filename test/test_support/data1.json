@@ -1,0 +1,35 @@
+{
+  "classes": ["A","B","C"],
+  "images": [
+    {
+      "name": "one",
+      "size": [640,480],
+      "objects": [
+        {"class":"A", "bbox": [0,0,0,0], "diff": 0, "trun": 0},
+        {"class":"B", "bbox": [1,1,1,1], "diff": 0, "trun": 0}
+      ]
+    },
+    {
+      "name": "two",
+      "size": [640,480],
+      "objects": [
+        {"class":"A", "bbox": [1,1,1,0], "diff": 0, "trun": 0}
+      ]
+    },
+    {
+      "name": "three",
+      "size": [640,480],
+      "objects": [
+        {"class":"B", "bbox":[0,0,0,0], "diff": 0, "trun": 0}
+      ]
+    },
+    {
+      "name": "four",
+      "size": [640,480],
+      "objects": [
+        {"class":"C", "bbox":[0,0,0,0], "diff": 0, "trun": 0},
+        {"class":"C", "bbox":[1,1,1,1], "diff": 0, "trun": 0}
+      ]
+    }
+  ]
+}

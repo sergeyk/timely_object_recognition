@@ -1,0 +1,54 @@
+# This is an output file for the lb library , 
+# for testing the loopy belief
+# Author : Ariel Jaimovich.
+
+#problems: 1) cliqs need to begin from 1
+# 2)have to have one spare vars or start indexing from 0
+
+# variables list
+# varName  \t  var number of assignments
+
+@Variables
+var0	2
+var1	2
+var2	2
+@End
+
+# measures list
+# measureName \t  number of vars in measure \t the vars card \t  table of potentials
+# the table is ordered when the assign advances like a number i.e : 000 001 010 011 100 ...
+
+@Measures
+meas0	2	2 2	0.223433455 0.82342323 0.65232352 0.3512431241
+meas1	1	2 	0.6234234 0.4234235
+meas2	2	2 2	0.765673 0.74658422 0.6435899 0.4213515
+@End
+
+# Cliques List
+# clique name \t  number of vars in clique \t the list of vars in clique 
+# \t  number of neighbourss \t list of neighbouring cliques 
+
+@Cliques
+cl0	2	0 1	1	1
+cl1	1	1	2	0 2
+cl2	2	1 2	1	1
+@End
+
+
+#num of clique \t num of measure
+@CliqueToMeasure
+0	0
+1	1
+2	2
+@End
+
+
+@DirectedMeasures
+@End
+
+
+@Exact
+2	2 2 	0.155422354266127 0.273955673781659 0.453762205044751 0.116859766907463 
+1	2 	0.609184559310878 0.390815440689122 
+2	2 2 	0.308437058796941 0.300747500513938 0.236186583028482 0.15462885766064 
+@End

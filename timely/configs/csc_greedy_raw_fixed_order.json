@@ -1,0 +1,9 @@
+{
+  "detectors": ["csc_default"],
+  "policy_mode": ["fixed_order"],
+  "weights_mode": ["greedy"],	
+  "rewards_mode": ["auc_ap_raw"],
+  "label": "Fixed-order greedy auc_ap_raw",
+  "color": "#4084ff",
+  "line": "-"
+}
