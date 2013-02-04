@@ -77,7 +77,7 @@ class GistClassifier(Classifier):
     """
     Train classifiers for class  
     """  
-    print '%d trains class %s'%(comm_rank, self.cls)
+    print '%d trains class %s'%(mpi.comm_rank, self.cls)
     t = time.time()
     pos = dataset.get_pos_samples_for_class(self.cls)
     neg = dataset.get_neg_samples_for_class(self.cls)
@@ -87,7 +87,7 @@ class GistClassifier(Classifier):
     
     x = np.concatenate((pos_gist, neg_gist))
     y = [1]*pos.shape[0] + [-1]*neg.shape[0]
-    print '%d compute svm for %s'%(comm_rank, self.cls)
+    print '%d compute svm for %s'%(mpi.comm_rank, self.cls)
     svm_filename = config.get_gist_svm_filename(self.cls, dataset)
     print svm_filename
     self.svm = train_svm(x, y, kernel, C, gamma)
@@ -119,7 +119,7 @@ def gist_evaluate_svms(d_train, d_val):
     gist = GistClassifier(cls, d_train, gist_table=gist_table, d_val=d_val)
     filename = config.get_gist_crossval_filename(d_train, cls) 
     # doing some crossval right here!!!
-    for set_idx in range(comm_rank, len(setts), comm_size):
+    for set_idx in range(mpi.comm_rank, len(setts), mpi.comm_size):
       sett = setts[len(setts)-1-set_idx]
       kernel = sett[0]
       C = sett[1]
@@ -135,10 +135,10 @@ def gist_evaluate_svms(d_train, d_val):
       w.close()
       print 'ap on val: %f'%val_ap
       
-  print '%d at safebarrier'%comm_rank
+  print '%d at safebarrier'%mpi.comm_rank
   safebarrier(comm)
   gist_scores = comm.reduce(gist_scores)
-  if comm_rank == 0:
+  if mpi.comm_rank == 0:
     print gist_scores
     filename = config.get_gist_classifications_filename(d_val)    
     cPickle.dump(gist_scores, open(filename,'w'))
@@ -148,7 +148,7 @@ def gist_evaluate_svms(d_train, d_val):
 def gist_train_good_svms(all_settings, d_train):
   gist_table = np.load(config.get_gist_dict_filename(d_train.name))
   
-  for sett_idx in range(comm_rank, len(all_settings), comm_size):
+  for sett_idx in range(mpi.comm_rank, len(all_settings), mpi.comm_size):
     sett = all_settings[sett_idx]    
     cls = sett[0]
     C = sett[1]
@@ -168,7 +168,7 @@ def gist_classify_dataset(d):
     return cPickle.load(open(savefile, 'r'))
     None
     
-  for cls_idx in range(comm_rank, len(classes), comm_size):
+  for cls_idx in range(mpi.comm_rank, len(classes), mpi.comm_size):
     cls = classes[cls_idx]
     
     savefile = config.get_gist_fastinf_table_name(d, cls)
@@ -181,7 +181,7 @@ def gist_classify_dataset(d):
     
   safebarrier(comm)
   table = comm.allreduce(table)  
-  if comm_rank == 0:
+  if mpi.comm_rank == 0:
     savefile = config.get_gist_fastinf_table_name(d, None)
     cPickle.dump(table, open(savefile,'w'))
   return table

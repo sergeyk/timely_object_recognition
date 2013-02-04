@@ -54,7 +54,7 @@ def train_svm(x, y, kernel='linear', C=100.0, gamma=0.0):
         gram[j,i] = kern
         inner_act += 1
         if inner_act%5000 == 0:
-          print '%d is in gram on: %d / %d'%(comm_rank, inner_act, inner_total)
+          print '%d is in gram on: %d / %d'%(mpi.comm_rank, inner_act, inner_total)
           print '\t%f seconds passed'%(time.time() - t_gram)
     t_gram = time.time() - t_gram
     print 'computed gram-matrix in',t_gram,'seconds'

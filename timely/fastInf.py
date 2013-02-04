@@ -239,7 +239,7 @@ def execute_lbp(filename_mrf, filename_data, filename_out, add_settings=[]):
                          '-e', filename_data, '-o', filename_out] + add_settings
 
   timefile = filename_out+'_time'
-  tt = ut.TicToc()
+  tt = TicToc()
   tt.tic()        
   cmd = ' '.join(cmd)
   ut.run_command(cmd)
@@ -292,14 +292,14 @@ def run_fastinf_different_settings(d, ms, rs, suffixs, num_bins = 5):
   table_gt = d.get_cls_ground_truth().arr.astype(int)
   print 'run with a total of %d settings'%len(settings)
   
-  for setindx in range(comm_rank, len(settings), comm_size):
+  for setindx in range(mpi.comm_rank, len(settings), mpi.comm_size):
     second_table = None
     setin = settings[setindx]
     suffix = setin[0]
     m = str(setin[1])
     r1 = str(setin[2])
     
-    print 'node %d runs %s, m=%s, r1=%s'%(comm_rank, suffix, m, r1)
+    print 'node %d runs %s, m=%s, r1=%s'%(mpi.comm_rank, suffix, m, r1)
 
     filename = config.get_fastinf_mrf_file(d, suffix)
     data_filename = config.get_fastinf_data_file(d, suffix)
@@ -362,7 +362,7 @@ def run_fastinf_different_settings(d, ms, rs, suffixs, num_bins = 5):
     if not suffix == 'GIST_CSC':
       store_bound(d, suffix, bounds)
     
-    print 'set up table on %d, write out mrf for %s, m=%s, r1=%s'%(comm_rank, suffix, m, r1)   
+    print 'set up table on %d, write out mrf for %s, m=%s, r1=%s'%(mpi.comm_rank, suffix, m, r1)   
       
     write_out_mrf(table, num_bins, filename, data_filename, second_table=second_table)
     
@@ -376,7 +376,7 @@ def run_fastinf_different_settings(d, ms, rs, suffixs, num_bins = 5):
         sec_bound_file += '_'+s
       np.savetxt(sec_bound_file, sec_bounds)
       
-    print '%d start running lbp for %s, m=%s, r1=%s'%(comm_rank, suffix, m, r1)
+    print '%d start running lbp for %s, m=%s, r1=%s'%(mpi.comm_rank, suffix, m, r1)
     
     filename_out = config.get_fastinf_res_file(d, suffix, m, r1)
     execute_lbp(filename, data_filename, filename_out, add_settings=add_sets)

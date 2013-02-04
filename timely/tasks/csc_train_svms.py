@@ -14,7 +14,7 @@ def train_csc_svms(d_train, d_val, kernel, C):
   # d_val: val      |   test
   dp = DatasetPolicy(d_train, d_train, detectors=['csc_default'])
       
-  for cls_idx in range(comm_rank, len(d_train.classes), comm_size):
+  for cls_idx in range(mpi.comm_rank, len(d_train.classes), mpi.comm_size):
     cls = d_train.classes[cls_idx]
     ext_detector = dp.actions[cls_idx].obj
     csc = CSCClassifier('default', cls, d_train, d_val)
@@ -24,19 +24,19 @@ def test_csc_svm(d_train, d_val):
   dp = DatasetPolicy(d_val, d_train, detectors=['csc_default'])
   
   table = np.zeros((len(d_val.images), len(d_val.classes)))
-  for cls_idx in range(comm_rank, len(d_val.classes), comm_size):
+  for cls_idx in range(mpi.comm_rank, len(d_val.classes), mpi.comm_size):
     cls = d_val.classes[cls_idx]
     ext_detector = dp.actions[cls_idx].obj
     # Load the classifier we trained in train_csc_svms
     csc = CSCClassifier('default', cls, d_train, d_val)
     table[:, cls_idx] = csc.eval_cls(ext_detector)
     
-  print '%d is at safebarrier'%comm_rank
+  print '%d is at safebarrier'%mpi.comm_rank
   safebarrier(comm)
 
   print 'passed safebarrier'
   table = comm.reduce(table, op=MPI.SUM, root=0)
-  if comm_rank == 0:
+  if mpi.comm_rank == 0:
     print 'save table'
     print table 
     cPickle.dump(table, open('table','w'))
@@ -59,7 +59,7 @@ if __name__=='__main__':
   train_gt = d_train.get_cls_ground_truth()
   val_gt = d_val.get_cls_ground_truth()
 
-  if comm_rank == 0:
+  if mpi.comm_rank == 0:
     filename = os.path.join(config.get_classifier_dataset_dirname(CSCClassifier('default','dog', d_train, d_val), d_train),'crossval.txt')
   
   kernels =  ['linear']
@@ -77,7 +77,7 @@ if __name__=='__main__':
     
     safebarrier(comm)
     
-    if comm_rank == 0:
+    if mpi.comm_rank == 0:
       table = conv(d_val, table_arr)
       cPickle.dump(table, open(os.path.join(config.get_ext_dets_foldname(d_val),'table'),'w'))
       

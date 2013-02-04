@@ -53,7 +53,7 @@ if __name__=='__main__':
   list_of_parameters = [lowers, uppers, kernels, intervalss, clss, Cs]
   product_of_parameters = list(itertools.product(*list_of_parameters))
   
-  for params_idx in range(comm_rank, len(product_of_parameters), comm_size):
+  for params_idx in range(mpi.comm_rank, len(product_of_parameters), mpi.comm_size):
     params = product_of_parameters[params_idx] 
     lower = params[0]
     upper = params[1]

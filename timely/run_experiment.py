@@ -10,9 +10,10 @@ import argparse
 from skvisutils import Dataset
 from skpyutils import mpi, skutil
 
-import timely.config as config
-from timely.dataset_policy import DatasetPolicy
-from timely.evaluation import Evaluation
+from timely import DatasetPolicy, Evaluation, TimelyConfig
+
+# TODO: load config properly -- Perhaps take res dir and stuff on the command line?
+config = TimelyConfig()
 
 
 def load_configs(name):
@@ -195,7 +196,7 @@ def main():
 
         dp = DatasetPolicy(
             dataset, train_dataset, weights_dataset_name, **config_f)
-        ev = Evaluation(dp)
+        ev = Evaluation(config, dp)
         all_bounds.append(dp.bounds)
         plot_infos.append(dict((k, config_f[k]) for k in (
             'label', 'line', 'color') if k in config_f))
@@ -208,7 +209,7 @@ def main():
             dets_table = ev.evaluate_vs_t(None, None, force=args.force)
             # dets_table_whole,clses_table_whole =
             # ev.evaluate_vs_t_whole(None,None,force=args.force)
-            if mpi.comm_rank == 0:
+            if mpi.mpi.comm_rank == 0:
                 dets_tables.append(dets_table)
                 # dets_tables_whole.append(dets_table_whole)
                 # clses_tables_whole.append(clses_table_whole)
@@ -218,7 +219,7 @@ def main():
             ev.evaluate_detections_whole(None, force=args.force)
 
     # and plot the comparison if multiple config files were given
-    if not args.no_apvst and len(configs) > 1 and mpi.comm_rank == 0:
+    if not args.no_apvst and len(configs) > 1 and mpi.mpi.comm_rank == 0:
         # filename of the final plot is the config file name
         dirname = config.get_evals_dir(dataset.get_name())
         filename = args.config

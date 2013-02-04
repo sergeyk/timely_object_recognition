@@ -45,7 +45,7 @@ class CSCClassifier(Classifier):
     assert(dataset.name in ['full_pascal_train','full_pascal_trainval'])
     print dataset.name
 
-    print '%d trains %s'%(comm_rank, self.cls)
+    print '%d trains %s'%(mpi.comm_rank, self.cls)
     # Positive samples
     pos_imgs = dataset.get_pos_samples_for_class(self.cls)
     pos = []
@@ -54,7 +54,7 @@ class CSCClassifier(Classifier):
       img_dets, _ = ext_detector.detect(image, astable=True)
       img_scores = img_dets.subset_arr('score')
       vector = self.create_vector_from_scores(img_scores)
-      print 'load image %d/%d on %d'%(idx, len(pos_imgs), comm_rank)
+      print 'load image %d/%d on %d'%(idx, len(pos_imgs), mpi.comm_rank)
       pos.append(vector)
     pos = np.concatenate(pos)
 
@@ -66,11 +66,11 @@ class CSCClassifier(Classifier):
       img_dets, _ = ext_detector.detect(image, astable=True)
       img_scores = img_dets.subset_arr('score')
       vector = self.create_vector_from_scores(img_scores)
-      print 'load image %d/%d on %d'%(idx, len(neg_imgs), comm_rank)
+      print 'load image %d/%d on %d'%(idx, len(neg_imgs), mpi.comm_rank)
       neg.append(vector)
     neg = np.concatenate(neg)
     
-    print '%d trains the model for'%comm_rank, self.cls
+    print '%d trains the model for'%mpi.comm_rank, self.cls
     self.train(pos, neg, kernel, C)
     
   def eval_cls(self, ext_detector):
@@ -81,7 +81,7 @@ class CSCClassifier(Classifier):
 
     table_cls = np.zeros(len(dataset.images))
     for img_idx, image in enumerate(dataset.images):
-      print '%d eval on img %d/%d'%(comm_rank, img_idx, len(dataset.images))
+      print '%d eval on img %d/%d'%(mpi.comm_rank, img_idx, len(dataset.images))
       img_dets, _ = ext_detector.detect(image, astable=True)
       img_scores = img_dets.subset_arr('score')
       score = self.classify_image(img_scores)

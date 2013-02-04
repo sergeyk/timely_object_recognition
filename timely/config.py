@@ -12,9 +12,21 @@ class TimelyConfig(Config):
     """
     Directories and constants that are specific to the Timely project.
     """
+    @property
+    def evals_dir(self):
+        return makedirs(join(self.res_dir, 'evals'))
+
     def get_dets_configs_dir(self, dataset):
         return makedirs(join(self.res_dir, 'det_configs', dataset.name))
 
+    def get_evals_dir(self, dataset_name):
+        return makedirs(join(self.evals_dir, dataset_name))
+
+    def get_evals_dp_dir(self, dp, train=False):
+        dirname = self.get_evals_dir(dp.dataset.get_name())
+        if train:
+            dirname = self.get_evals_dir(dp.train_dataset.get_name())
+        return makedirs(join(dirname, dp.get_config_name()))
 
 ##################
 # CONSTANTS
@@ -157,22 +169,6 @@ def get_windows_params_grid(dataset_name):
 
 def get_window_params_json(dataset_name):
     return join(get_sliding_windows_params_dir(dataset_name), '%s.txt')
-
-# ./results/evals
-evals_dir = makedirs(join(res_dir, 'evals'))
-
-# ./{evals_dir}/{dataset_name}
-
-
-def get_evals_dir(dataset_name):
-    return makedirs(join(evals_dir, dataset_name))
-
-
-def get_evals_dp_dir(dp, train=False):
-    dirname = get_evals_dir(dp.dataset.get_name())
-    if train:
-        dirname = get_evals_dir(dp.train_dataset.get_name())
-    return makedirs(join(dirname, dp.get_config_name()))
 
 
 def get_dp_dets_filename(dp, train=False):

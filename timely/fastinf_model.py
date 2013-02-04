@@ -24,7 +24,7 @@ class FastinfModel(InferenceModel):
       self.cache = {}
     self.cmd = config.fastinf_bin+" -i %s -m 0 -Is %f -Imm %d"%(self.res_fname, self.smoothing, lbp_iters)
     self.num_obs_vars = num_obs_vars
-    self.tt = ut.TicToc().tic()
+    self.tt = TicToc().tic()
     self.process = pexpect.spawn(self.cmd)
     self.blacklist = []
   
@@ -44,14 +44,14 @@ class FastinfModel(InferenceModel):
       evidence[i] = str(self.fd.discretize_value(observations[i],i))
     evidence = "(%s %s )"%(self.dataset.num_classes()*' ?', ' '.join(evidence))
     if evidence in self.blacklist:
-      print("comm_rank %d: Skipping blacklisted evidence!"%comm_rank)
+      print("mpi.comm_rank %d: Skipping blacklisted evidence!"%mpi.comm_rank)
       # don't do anything, we don't want to get stuck with another timeout
       return
     try:
       marginals = self.get_marginals(evidence)
     except Exception as e:
-      print("comm_rank %d: something went wrong in fastinf:get_marginals!!!"%
-        comm_rank)
+      print("mpi.comm_rank %d: something went wrong in fastinf:get_marginals!!!"%
+        mpi.comm_rank)
       print evidence
       print e
       # blacklist this evidence and restart process
@@ -59,7 +59,7 @@ class FastinfModel(InferenceModel):
       try:
         self.process.close(force=True)
       except Exception as e2:
-        print("comm_rank %d: can't close process!"%comm_rank)
+        print("mpi.comm_rank %d: can't close process!"%mpi.comm_rank)
       self.process = pexpect.spawn(self.cmd)
       self.get_marginals()
     

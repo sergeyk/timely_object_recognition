@@ -11,7 +11,7 @@ class Classifier(object):
     self.name = ''
     self.suffix = ''
     self.cls = ''
-    self.tt = ut.TicToc()
+    self.tt = TicToc()
           
   def train(self, pos, neg, kernel, C):
     y = [1]*pos.shape[0] + [-1]*neg.shape[0]

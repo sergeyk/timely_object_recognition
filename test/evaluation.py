@@ -20,7 +20,7 @@ class TestEvaluationPerfect:
     train_dataset = Dataset('test_pascal_train',force=True)
     dataset = Dataset('test_pascal_val',force=True)
     self.dp = DatasetPolicy(dataset,train_dataset,detector='perfect')
-    self.evaluation = Evaluation(self.dp)    
+    self.evaluation = Evaluation(test_config, self.dp)    
 
   def test_compute_pr_multiclass(self):
     cols = ['x','y','w','h','cls_ind','img_ind','diff'] 

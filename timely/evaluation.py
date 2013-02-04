@@ -1,6 +1,7 @@
 from mako.template import Template
-from skvisutils import Dataset
 from skvisutils import BoundingBox
+from skpyutils import skutil as ut
+import os
 
 class Evaluation(object):
   """
@@ -10,7 +11,7 @@ class Evaluation(object):
   MIN_OVERLAP = 0.5
   TIME_INTERVALS = 12
 
-  def __init__(self,dataset_policy=None,dataset=None,name='default'):
+  def __init__(self,config,dataset_policy=None,dataset=None,name='default'):
     """
     Must have either dataset_policy or dataset and name.
     If dataset_policy is given, dataset and name are ignored.
@@ -57,10 +58,9 @@ class Evaluation(object):
     bounds = self.dp.bounds if self.dp and self.dp.bounds else None
 
     dets_table = None
-    clses_table = None
     print self.det_apvst_data_fname
     if os.path.exists(self.det_apvst_data_fname) and not force:
-      if comm_rank==0:
+      if mpi.comm_rank==0:
         dets_table = np.load(self.det_apvst_data_fname)[()]
     else:
       if not dets:
@@ -87,8 +87,8 @@ class Evaluation(object):
       num_points = points.shape[0]
       det_arr = np.zeros((num_points,3))
       cls_arr = np.zeros((num_points,3))
-      for i in range(comm_rank,num_points,comm_size):
-        tt = ut.TicToc().tic()
+      for i in range(mpi.comm_rank,num_points,mpi.comm_size):
+        tt = TicToc().tic()
         point = points[i]
         det_aps = []
         cls_aps = []
@@ -109,15 +109,15 @@ class Evaluation(object):
         print("Calculating AP (%.3f) of the %d detections up to %.3fs took %.3fs"%(
           np.mean(det_aps),num_dets,point,tt.qtoc()))
       det_arr_all = None
-      if comm_rank == 0:
+      if mpi.comm_rank == 0:
         det_arr_all = np.zeros((num_points,3))
       safebarrier(comm)
       comm.Reduce(det_arr,det_arr_all)
-      if comm_rank==0:
+      if mpi.comm_rank==0:
         dets_table = Table(det_arr_all, ['time','ap_mean','ap_std'], self.name)
         np.save(self.det_apvst_data_fname,dets_table)
     # Plot the table
-    if plot and comm_rank==0:
+    if plot and mpi.comm_rank==0:
       try:
         Evaluation.plot_ap_vs_t([dets_table],self.det_apvst_png_fname, bounds, True, force)
       except:
@@ -154,7 +154,7 @@ class Evaluation(object):
     clses_table = None
     if os.path.exists(self.det_apvst_data_whole_fname) and \
        os.path.exists(self.cls_apvst_data_whole_fname) and not force:
-      if comm_rank==0:
+      if mpi.comm_rank==0:
         dets_table = np.load(self.det_apvst_data_whole_fname)[()]
         clses_table = np.load(self.cls_apvst_data_whole_fname)[()]
     else:
@@ -170,8 +170,8 @@ class Evaluation(object):
 
       det_arr = np.zeros((num_points,2))
       cls_arr = np.zeros((num_points,2))
-      for i in range(comm_rank,num_points,comm_size):
-        tt = ut.TicToc().tic()
+      for i in range(mpi.comm_rank,num_points,mpi.comm_size):
+        tt = TicToc().tic()
         point = points[i]
         if dets.shape[0] < 1:
           dets_to_this_point = dets
@@ -213,19 +213,19 @@ class Evaluation(object):
           print("We are in gist, calculating AP of detection makes no sense.")
       det_arr_all = None
       cls_arr_all = None
-      if comm_rank == 0:
+      if mpi.comm_rank == 0:
         det_arr_all = np.zeros((num_points,2))
         cls_arr_all = np.zeros((num_points,2))
       safebarrier(comm)
       comm.Reduce(det_arr,det_arr_all)
       comm.Reduce(cls_arr,cls_arr_all)
-      if comm_rank==0:
+      if mpi.comm_rank==0:
         dets_table = Table(det_arr_all, ['time','ap'], self.name)
         np.save(self.det_apvst_data_whole_fname,dets_table)
         clses_table = Table(cls_arr_all, ['time','ap'], self.name)
         np.save(self.cls_apvst_data_whole_fname,clses_table)
     # Plot the table
-    if plot and comm_rank==0:
+    if plot and mpi.comm_rank==0:
       try:
         Evaluation.plot_ap_vs_t([dets_table],self.det_apvst_png_whole_fname, bounds, True, force)
         Evaluation.plot_ap_vs_t([clses_table],self.cls_apvst_png_whole_fname, bounds, True, force)
@@ -350,19 +350,19 @@ class Evaluation(object):
     # Per-Class
     num_classes = len(self.dataset.classes)
     dist_aps = np.zeros(num_classes)
-    for cls_ind in range(comm_rank, num_classes, comm_size):
+    for cls_ind in range(mpi.comm_rank, num_classes, mpi.comm_size):
       cls = self.dataset.classes[cls_ind] 
       cls_dets = dets.filter_on_column('cls_ind',cls_ind)
       cls_gt = self.dataset.get_get_gt_for_class(cls,with_diff=True)
       dist_aps[cls_ind] = self.compute_and_plot_pr(cls_dets, cls_gt, cls, force)
     aps = None
-    if comm_rank==0:
+    if mpi.comm_rank==0:
       aps = np.zeros(num_classes)
     safebarrier(comm)
     comm.Reduce(dist_aps,aps)
 
     # the rest is done by rank==0
-    if comm_rank == 0:
+    if mpi.comm_rank == 0:
       # Multi-class
       gt = self.dataset.get_det_gt(with_diff=True)
       filename = os.path.join(self.results_path, 'pr_whole_multiclass')
@@ -490,7 +490,7 @@ class Evaluation(object):
       rec = np.array([0])
       prec = np.array([0])
       return (ap,rec,prec)
-    tt = ut.TicToc().tic()
+    tt = TicToc().tic()
 
     # augment gt with a column keeping track of matches
     cols = list(gt.cols) + ['matched']
