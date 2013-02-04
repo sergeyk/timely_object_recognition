@@ -1,6 +1,5 @@
-from timely.common_imports import *
 from timely.csc_classifier import CSCClassifier
-from timely.dataset import Dataset
+from skvisutils import Dataset
 import timely.config as config
 
 class TestCscClassifier:

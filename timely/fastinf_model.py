@@ -1,6 +1,4 @@
 import pexpect
-
-from timely.common_imports import *
 import timely.config as config
 from timely.ngram_model import InferenceModel
 from timely.fastInf import FastinfDiscretizer
@@ -18,7 +16,7 @@ class FastinfModel(InferenceModel):
     self.smoothing = 0.5
     self.cache_fname = config.get_fastinf_cache_file(dataset,model_name,m,r1,self.smoothing)
 
-    if opexists(self.cache_fname):
+    if os.path.exists(self.cache_fname):
       with open(self.cache_fname) as f:
         print("Loading fastinf cache from file")
         self.cache = cPickle.load(f)

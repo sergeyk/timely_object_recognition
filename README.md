@@ -1,4 +1,4 @@
-## Timely Object Recognition
+# Timely Object Recognition
 
 A system for multi-class object detection that uses reinforcement learning.
 Configured to use pre-output DPM [1] detections and pre-output GIST features
@@ -7,8 +7,11 @@ Relies on the FastInf library [2] for one of the inference modes (code included)
 
 Ongoing work on making this increasingly simple to run, check here for updates.
 
+## Config file format
 
-### References
+
+
+## References
 
 [1] P. F. Felzenszwalb, R. B. Girshick, and D. McAllester, “Cascade object detection with deformable part models,” in CVPR, 2010, pp. 2241–2248.
 

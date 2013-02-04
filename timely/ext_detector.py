@@ -1,5 +1,3 @@
-from common_imports import *
-
 import timely.config as config
 from timely.detector import Detector
 from timely.csc_classifier import CSCClassifier

@@ -1,10 +1,8 @@
 import scipy
-
-from timely.common_imports import *
 import timely.config as config
 
-from timely.image import BoundingBox
-from timely.dataset import Dataset
+from skvisutils import BoundingBox
+from skvisutils import Dataset
 from timely.belief_state import BeliefState
 from timely.dataset_policy import DatasetPolicy
 from timely.sliding_windows import SlidingWindows

@@ -3,7 +3,7 @@ Runner script to output cooccurrence statistics for the synthetic
 and PASCAL datasets.
 """
 
-from skvisutils.dataset import Dataset
+from skvisutils import Dataset
 
 datasets = [
   'synthetic',

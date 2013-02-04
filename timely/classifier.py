@@ -1,8 +1,6 @@
 from pylab import *
 from abc import abstractmethod
 import fnmatch
-
-from timely.common_imports import *
 import timely.config as config
 from timely.training import train_svm, svm_predict, save_svm, load_svm,\
   svm_proba
@@ -59,5 +57,5 @@ class Classifier(object):
       
   def get_best_table(self):
     svm_save_dir = config.get_classifier_learning_dirname(self)
-    return Table.load(opjoin(svm_save_dir,'best_table'))
+    return Table.load(os.path.join(svm_save_dir,'best_table'))
     

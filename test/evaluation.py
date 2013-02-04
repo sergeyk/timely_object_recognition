@@ -3,43 +3,7 @@ from timely.common_imports import *
 from timely.dataset import Dataset
 from timely.dataset_policy import DatasetPolicy
 from timely.evaluation import Evaluation
-from timely.sliding_windows import SlidingWindows
 import timely.config as config
-import math
-
-class TestEvaluationSynthetic:
-  def __init__(self):
-    self.d = Dataset('test_data2',force=True)
-    self.classes = ["A","B","C"]
-    self.det_gt = self.d.get_det_gt()
-
-  def test(self):
-    scores = np.ones(self.det_gt.shape[0])
-    dets = self.det_gt.append_column('score',scores)
-
-    scores = np.ones(self.d.get_det_gt_for_class('A').shape[0])
-    dets_just_A = self.d.get_det_gt_for_class('A')
-    dets_just_A = dets_just_A.append_column('score',scores)
-
-    self.d.set_values('uniform')
-    assert(np.all(self.d.values == 1./3 * np.ones(len(self.classes))))
-    dp = DatasetPolicy(self.d,self.d,detector='perfect')
-    ev = Evaluation(dp)
-    ap = ev.compute_det_map(dets,self.det_gt)
-    assert(ap==1)
-    ap = ev.compute_det_map(dets_just_A,self.det_gt)
-    print(ap)
-    assert(ut.fequal(ap, 0.33333333333333))
-
-    self.d.set_values('inverse_prior')
-    assert(np.all(self.d.values == np.array([0.25,0.25,0.5])))
-    dp = DatasetPolicy(self.d,self.d,detector='perfect')
-    ev = Evaluation(dp)
-    ap = ev.compute_det_map(dets,self.det_gt)
-    assert(ap==1)
-    ap = ev.compute_det_map(dets_just_A,self.det_gt)
-    print(ap)
-    assert(ut.fequal(ap, 0.25))
 
 class TestEvaluationPerfect:
   def __init__(self):

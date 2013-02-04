@@ -2,7 +2,7 @@ from synthetic.common_imports import *
 from synthetic.common_mpi import *
 
 import synthetic.config as config
-from synthetic.dataset import Dataset
+from skvisutils import Dataset
 from synthetic.dataset_policy import DatasetPolicy
 from synthetic.ext_detector import ExternalDetector
 from synthetic.csc_classifier import CSCClassifier

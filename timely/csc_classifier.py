@@ -1,10 +1,9 @@
-from timely.common_imports import *
 import timely.config as config
 from timely.config import get_ext_dets_filename
 from timely.classifier import Classifier
-from timely.dataset import Dataset
+from skvisutils import Dataset
 from timely.training import svm_predict, svm_proba
-from timely.image import Image
+from skvisutils import Image
 from timely.evaluation import Evaluation
 
 class CSCClassifier(Classifier):

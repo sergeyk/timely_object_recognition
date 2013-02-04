@@ -1,21 +1,16 @@
-from common_imports import *
-
-import datetime
+import numpy as np
 import scipy.io
+import matplotlib.pyplot as plt
 import sklearn
 from sklearn.cross_validation import KFold
-import matplotlib.pyplot as plt
 
-import timely.config as config
-from timely.dataset import Dataset
+from skvisutils import BoundingBox
 from timely.sample import Sample
 from timely.evaluation import Evaluation
 from timely.gist_classifier import GistClassifier
 from timely.detector import *
 from timely.ext_detector import ExternalDetector
-from timely.bounding_box import BoundingBox
 from timely.belief_state import BeliefState
-from timely.fastinf_model import FastinfModel
 
 class ImageAction:
   def __init__(self, name, obj):
@@ -180,7 +175,7 @@ class DatasetPolicy:
       weights_mode = self.weights_mode
 
     filename = config.get_dp_weights_filename(self)
-    if not force and opexists(filename):
+    if not force and os.path.exists(filename):
       self.weights = np.loadtxt(filename)
       return self.weights
 
@@ -214,7 +209,7 @@ class DatasetPolicy:
       if 'naive_ap|present' not in self.actions[0].obj.config or \
          'actual_ap|present' not in self.actions[0].obj.config or \
          'actual_ap|absent' not in self.actions[0].obj.config:
-        det_configs = self.output_det_statistics()
+        self.output_det_statistics()
         self.test_actions = self.init_actions()
         self.actions = self.test_actions
 
@@ -294,7 +289,7 @@ class DatasetPolicy:
     print det_filename
     cls_filename = config.get_dp_clses_filename(self,train)
     if not force \
-        and opexists(det_filename) and opexists(cls_filename):
+        and os.path.exists(det_filename) and os.path.exists(cls_filename):
       print("Loading cached stuff!")
       dets_table = np.load(det_filename)[()]
       clses_table = np.load(cls_filename)[()]
@@ -405,7 +400,7 @@ class DatasetPolicy:
 
         try:
           # write image of the weights
-          img_filename = opjoin(
+          img_filename = os.path.join(
             config.get_dp_weights_images_dirname(self),'iter_%d.png'%i)
           self.write_weights_image(img_filename)
 
@@ -413,7 +408,7 @@ class DatasetPolicy:
           all_features = self.construct_X_from_samples(all_samples)
           avg_feature = np.mean(all_features,0).reshape(
             len(self.actions),BeliefState.num_features)
-          img_filename = opjoin(
+          img_filename = os.path.join(
             config.get_dp_features_images_dirname(self),'iter_%d.png'%i)
           self.write_feature_image(avg_feature, img_filename)
         except:
@@ -519,7 +514,7 @@ class DatasetPolicy:
     alpha_errors = []
     alphas = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
     for alpha in alphas:
-      tl = self.tt.tic('regress')
+      self.tt.tic('regress')
       #clf = sklearn.linear_model.Lasso(alpha=alpha,max_iter=4000)
       clf = sklearn.linear_model.Ridge(alpha=alpha,fit_intercept=False)
       errors = []
@@ -532,7 +527,8 @@ class DatasetPolicy:
     best_alpha = alphas[best_ind]
     print("Cross-validating regression took %.3f s"%self.tt.qtoc('regress'))
     #clf = sklearn.linear_model.Lasso(alpha=best_alpha,max_iter=4000)
-    tl = self.tt.tic('regress')
+    
+    self.tt.tic('regress')
     clf = sklearn.linear_model.Ridge(alpha=best_alpha,fit_intercept=False)
     clf.fit(X,y)
     print("Best lambda was %.3f"%best_alpha)
@@ -590,7 +586,7 @@ class DatasetPolicy:
           else:
             det_configs[self.actions[ind].name]['actual_ap|absent'] = 0
       detectors = '-'.join(self.detectors)
-      filename = opjoin(
+      filename = os.path.join(
         config.get_dets_configs_dir(self.train_dataset), detectors+'.txt')
       with open(filename,'w') as f:
         json.dump(det_configs,f)
@@ -858,6 +854,8 @@ class DatasetPolicy:
 
     return (all_detections,all_clses,samples)
 
+  #TODO: MASSIVE CLEANUP HERE
+  
   ###############
   # External detections stuff
   ###############
@@ -982,13 +980,13 @@ class DatasetPolicy:
     name = os.path.splitext(image.name)[0]
     # TODO: figure out how to deal with different types of detections
     dets_dir = '/u/vis/x1/sergeyk/rl_detection/voc-release4/2007/tmp/dets_may25_DP'
-    filename = opjoin(dets_dir, '%s_dets_all_may25_DP.mat'%name)
-    if not opexists(filename):
+    filename = os.path.join(dets_dir, '%s_dets_all_may25_DP.mat'%name)
+    if not os.path.exists(filename):
       dets_dir = '/u/vis/x1/sergeyk/rl_detection/voc-release4/2007/tmp/dets_jun1_DP_trainval'
-      filename = opjoin(dets_dir, '%s_dets_all_jun1_DP_trainval.mat'%name)
-      if not opexists(filename):
-        filename = opjoin(config.test_support_dir,'dets/%s_dets_all_may25_DP.mat'%name)
-        if not opexists(filename):
+      filename = os.path.join(dets_dir, '%s_dets_all_jun1_DP_trainval.mat'%name)
+      if not os.path.exists(filename):
+        filename = os.path.join(config.test_support_dir,'dets/%s_dets_all_may25_DP.mat'%name)
+        if not os.path.exists(filename):
           print("File does not exist!")
           return None
     mat = scipy.io.loadmat(filename)

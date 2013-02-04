@@ -8,7 +8,7 @@ from synthetic.common_mpi import *
 import synthetic.config as config
 import subprocess as subp
 
-from synthetic.dataset import Dataset
+from skvisutils import Dataset
 from synthetic.gist_classifier import gist_classify_dataset
 from matplotlib.pylab import *
 import argparse

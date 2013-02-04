@@ -1,9 +1,7 @@
-from common_imports import *
-
 import timely.config as config
 from timely.classifier import Classifier
 from timely.training import load_svm
-from timely.dataset import Dataset
+from skvisutils import Dataset
 
 class DPMClassifier(Classifier):
   def __init__(self,suffix=''):

@@ -1,7 +1,6 @@
-from timely.common_imports import *
 import timely.config as config
 
-from timely.dataset import Dataset
+from skvisutils import Dataset
 from timely.dataset_policy import DatasetPolicy
 from timely.belief_state import BeliefState
 

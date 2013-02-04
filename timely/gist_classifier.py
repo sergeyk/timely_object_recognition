@@ -1,10 +1,8 @@
 """
 Methods to predict class presence in an image using the GIST feature.
 """
-from common_imports import *
-
 import timely.config as config
-from timely.image import Image
+from skvisutils import Image
 from timely.classifier import Classifier
 from timely.evaluation import Evaluation
 

@@ -3,9 +3,6 @@ Created on Nov 17, 2011
 
 @author: Tobias Baumgartner
 '''
-
-from common_imports import *
-
 import scipy.io
 import synthetic.util as ut
 

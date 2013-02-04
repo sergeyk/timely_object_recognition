@@ -1,8 +1,6 @@
 """
 Take half of the detections, randomly, and write out to disk.
 """
-
-from common_imports import *
 import synthetic.config as config
 
 def half_csc(dets_table):

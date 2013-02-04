@@ -1,5 +1,3 @@
-from common_imports import *
-
 import timely.config as config
 import skpyutils.util as ut
 

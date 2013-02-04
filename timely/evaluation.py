@@ -1,9 +1,6 @@
 from mako.template import Template
-
-from timely.common_imports import *
-import timely.config as config
-from timely.dataset import Dataset
-from timely.image import BoundingBox
+from skvisutils import Dataset
+from skvisutils import BoundingBox
 
 class Evaluation(object):
   """
@@ -33,19 +30,19 @@ class Evaluation(object):
 
     # Determine filenames and create directories
     self.results_path = config.get_evals_dp_dir(self.dp)
-    self.det_apvst_data_fname = opjoin(self.results_path, 'det_apvst_table.npy')
-    self.det_apvst_data_whole_fname = opjoin(self.results_path, 'det_apvst_table_whole.npy')
-    self.cls_apvst_data_whole_fname = opjoin(self.results_path, 'cls_apvst_table_whole.npy')
+    self.det_apvst_data_fname = os.path.join(self.results_path, 'det_apvst_table.npy')
+    self.det_apvst_data_whole_fname = os.path.join(self.results_path, 'det_apvst_table_whole.npy')
+    self.cls_apvst_data_whole_fname = os.path.join(self.results_path, 'cls_apvst_table_whole.npy')
 
-    self.det_apvst_png_fname = opjoin(self.results_path, 'det_apvst.png')
-    self.det_apvst_png_whole_fname = opjoin(self.results_path, 'det_apvst_whole.png')
-    self.cls_apvst_png_whole_fname = opjoin(self.results_path, 'cls_apvst_whole.png')
+    self.det_apvst_png_fname = os.path.join(self.results_path, 'det_apvst.png')
+    self.det_apvst_png_whole_fname = os.path.join(self.results_path, 'det_apvst_whole.png')
+    self.cls_apvst_png_whole_fname = os.path.join(self.results_path, 'cls_apvst_whole.png')
 
-    self.dashboard_filename = opjoin(self.results_path, 'dashboard_%s.html')
-    self.wholeset_aps_filename = opjoin(self.results_path, 'aps_whole.txt')
-    wholeset_dirname = ut.makedirs(opjoin(self.results_path, 'wholeset_detailed'))
-    self.pr_whole_png_filename = opjoin(wholeset_dirname, 'pr_whole_%s.png')
-    self.pr_whole_txt_filename = opjoin(wholeset_dirname, 'pr_whole_%s.txt')
+    self.dashboard_filename = os.path.join(self.results_path, 'dashboard_%s.html')
+    self.wholeset_aps_filename = os.path.join(self.results_path, 'aps_whole.txt')
+    wholeset_dirname = ut.makedirs(os.path.join(self.results_path, 'wholeset_detailed'))
+    self.pr_whole_png_filename = os.path.join(wholeset_dirname, 'pr_whole_%s.png')
+    self.pr_whole_txt_filename = os.path.join(wholeset_dirname, 'pr_whole_%s.txt')
     
   ##############
   # AP vs. Time
@@ -62,7 +59,7 @@ class Evaluation(object):
     dets_table = None
     clses_table = None
     print self.det_apvst_data_fname
-    if opexists(self.det_apvst_data_fname) and not force:
+    if os.path.exists(self.det_apvst_data_fname) and not force:
       if comm_rank==0:
         dets_table = np.load(self.det_apvst_data_fname)[()]
     else:
@@ -155,8 +152,8 @@ class Evaluation(object):
     
     dets_table = None
     clses_table = None
-    if opexists(self.det_apvst_data_whole_fname) and \
-       opexists(self.cls_apvst_data_whole_fname) and not force:
+    if os.path.exists(self.det_apvst_data_whole_fname) and \
+       os.path.exists(self.cls_apvst_data_whole_fname) and not force:
       if comm_rank==0:
         dets_table = np.load(self.det_apvst_data_whole_fname)[()]
         clses_table = np.load(self.cls_apvst_data_whole_fname)[()]
@@ -261,7 +258,7 @@ class Evaluation(object):
     Save plot to given filename.
     Does not return anything.
     """
-    if opexists(filename) and not force:
+    if os.path.exists(filename) and not force:
       print("Plot already exists, not doing anything")
       return
     plt.clf()
@@ -368,8 +365,8 @@ class Evaluation(object):
     if comm_rank == 0:
       # Multi-class
       gt = self.dataset.get_det_gt(with_diff=True)
-      filename = opjoin(self.results_path, 'pr_whole_multiclass')
-      if force or not opexists(filename):
+      filename = os.path.join(self.results_path, 'pr_whole_multiclass')
+      if force or not os.path.exists(filename):
         print("Evaluating %d dets in the multiclass setting..."%dets.shape[0])
         ap_mc = self.compute_and_plot_pr(dets, gt, 'multiclass')
 
@@ -402,7 +399,7 @@ class Evaluation(object):
     Return ap.
     """
     filename = self.pr_whole_txt_filename%name
-    if force or not opexists(filename):
+    if force or not os.path.exists(filename):
       [ap,rec,prec] = self.compute_det_pr(dets, gt)
       try:
         self.plot_pr(ap,rec,prec,name,self.pr_whole_png_filename%name)
@@ -419,7 +416,7 @@ class Evaluation(object):
 
   def plot_pr(self, ap, rec, prec, name, filename, force=False):
     """Plot the Precision-Recall curve, saving png to filename."""
-    if opexists(filename) and not force:
+    if os.path.exists(filename) and not force:
       print("plot_pr: not doing anything as file exists")
       return
     label = "%s: %.3f"%(name,ap)

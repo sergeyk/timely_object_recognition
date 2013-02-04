@@ -1,7 +1,6 @@
-from timely.common_imports import *
 import timely.config as config
 
-from timely.dataset import Dataset
+from skvisutils import Dataset
 from timely.fastinf_model import FastinfModel
 
 def test():
